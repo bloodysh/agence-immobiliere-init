@@ -38,9 +38,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $carteAgentImmo = null;
 
+    /**
+     * @var Collection<int, BienImmobilier>
+     */
+    #[ORM\OneToMany(mappedBy: 'leUser', targetEntity: BienImmobilier::class)]
+    private Collection $lesBien;
+
     public function __construct()
     {
-
+        $this->lesBien = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,6 +151,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCarteAgentImmo(bool $carteAgentImmo): self
     {
         $this->carteAgentImmo = $carteAgentImmo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BienImmobilier>
+     */
+    public function getLesBien(): Collection
+    {
+        return $this->lesBien;
+    }
+
+    public function addLesBien(BienImmobilier $lesBien): static
+    {
+        if (!$this->lesBien->contains($lesBien)) {
+            $this->lesBien->add($lesBien);
+            $lesBien->setLeUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLesBien(BienImmobilier $lesBien): static
+    {
+        if ($this->lesBien->removeElement($lesBien)) {
+            // set the owning side to null (unless already changed)
+            if ($lesBien->getLeUser() === $this) {
+                $lesBien->setLeUser(null);
+            }
+        }
 
         return $this;
     }

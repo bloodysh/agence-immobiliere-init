@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ annonce.titre }}</h1>
+    <table>
+        <tr>
+            <th>Prix du bien</th>
+            <th>Surface habitable</th>
+            <th>Surface non habitable</th>
+        </tr>
+        <tr>
+            <td>{{ annonce.prix()|number_format(2, '.', ',') }}</td>
+            <td>{{ annonce.getBienImmobilier().surfaceHabitable() }}</td>
+            <td>{{ annonce.getBienImmobilier().surfaceNonHabitable() }}</td>
+        </tr>
+    </table>
+    <h2>Détail des surfaces des pièces:</h2>
+    <table>
+        <tr>
+            <th>Type de pièce</th>
+            <th>Surface</th>
+        </tr>
+        {% for piece in annonce.getBienImmobilier().getPiece() %}
+            <tr>
+                <td>{{ piece.getTypePiece().getLibelle() }}</td>
+                <td>{{ piece.getSurface() }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
